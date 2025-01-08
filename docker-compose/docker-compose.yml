@@ -15,17 +15,17 @@ services:
       - "5432:5432"
     restart: unless-stopped
   ranger-admin:
-    image: armadik/ranger-admin:2.4.0
+    image: aakashnand/trino-ranger-demo:v4.0
     container_name: ranger-admin
     hostname: ranger
-    command: ["./bootstrap.sh"]
+    entrypoint: /root/ranger-admin/docker-entrypoint.sh
     depends_on:
       - postgres
     volumes:
-      - ./ranger-admin/install.properties:/opt/ranger-admin/install.properties
+      - ./ranger-admin:/root/ranger-admin
     ports:
       - "6080:6080"
-    restart: always
+    restart: "no"
   ranger-usersync:
     image: armadik/ranger-usersync:2.4.0
     container_name: ranger-usersync
@@ -33,9 +33,9 @@ services:
     depends_on:
       - ranger-admin
     volumes:
-      - ./ranger-usersync/install.properties:/opt/ranger_usersync/install.properties
+      - ./usersync/ranger-2.4.0-usersync:/opt/ranger-2.4.0-usersync
     command: ["./bootstrap.sh"]
-    restart: always
+    restart: "no"
   es:
     image: elasticsearch:7.5.0
     container_name: elasticsearch
